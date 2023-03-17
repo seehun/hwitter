@@ -7,12 +7,14 @@ function App() {
   const auth = getAuth();
   const [init, setInit] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userObj, setUserObj] = useState(null);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       // console.log(user);
       if (user) {
         setIsLoggedIn(true);
+        setUserObj(user);
       } else {
         setIsLoggedIn(false);
       }
@@ -22,7 +24,11 @@ function App() {
 
   return (
     <>
-      {init ? <AppRouter login_state={isLoggedIn} /> : 'initializating...'}
+      {init ? (
+        <AppRouter login_state={isLoggedIn} userObj={userObj} />
+      ) : (
+        'initializating...'
+      )}
       <footer>&copy; hwitter {new Date().getFullYear()} </footer>
     </>
   );
