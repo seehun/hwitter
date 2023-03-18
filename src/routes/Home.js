@@ -20,7 +20,7 @@ import { v4 as uuidv4 } from 'uuid';
 const Home = (props) => {
   const [tweet, setTweet] = useState('');
   const [tweets, setTweets] = useState([]);
-  const [attachment, setAttachment] = useState();
+  const [attachment, setAttachment] = useState('');
 
   //   비실시간으로 데이터 가져오기
   //   const getTweets = async () => {

@@ -13,7 +13,7 @@ import Profile from '../routes/Profile';
 const AppRouter = (props) => {
   return (
     <Router>
-      {props.login_state && <Navigation />}
+      {props.login_state && <Navigation userObj={props.userObj} />}
       <Switch>
         {props.login_state ? (
           <>
@@ -21,7 +21,10 @@ const AppRouter = (props) => {
               <Home userObj={props.userObj} />
             </Route>
             <Route exact path='/profile'>
-              <Profile />
+              <Profile
+                userObj={props.userObj}
+                refreshUser={props.refreshUser}
+              />
             </Route>
           </>
         ) : (
