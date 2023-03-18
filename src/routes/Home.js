@@ -6,13 +6,21 @@ import {
   getDocs,
   query,
   onSnapshot,
-  doc,
 } from 'firebase/firestore';
 import Tweet from '../components/Tweet';
+import { storageService } from '../fbase';
+import {
+  ref,
+  uploadString,
+  getDownloadURL,
+  deleteObject,
+} from 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid';
 
 const Home = (props) => {
   const [tweet, setTweet] = useState('');
   const [tweets, setTweets] = useState([]);
+  const [attachment, setAttachment] = useState();
 
   //   비실시간으로 데이터 가져오기
   //   const getTweets = async () => {
@@ -44,14 +52,40 @@ const Home = (props) => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    let attachmentURL = '';
 
-    await addDoc(collection(dbService, 'tweets'), {
+    if (attachment !== '') {
+      const attachmentRef = ref(
+        storageService,
+        `${props.userObj.uid}/${uuidv4()}`
+      );
+      const response = await uploadString(
+        attachmentRef,
+        attachment,
+        'data_url'
+      );
+      attachmentURL = await getDownloadURL(attachmentRef);
+    }
+
+    const tweetObj = {
       text: tweet,
       createdAt: Date.now(),
       creatorId: props.userObj.uid,
-    });
+      attachmentURL: attachmentURL,
+    };
+    await addDoc(collection(dbService, 'tweets'), tweetObj);
     setTweet('');
+    setAttachment('');
   };
+  const onFileChange = (e) => {
+    const theFile = e.target.files[0];
+    const reader = new FileReader();
+    reader.onloadend = (finishEvent) => {
+      setAttachment(finishEvent.currentTarget.result);
+    };
+    reader.readAsDataURL(theFile);
+  };
+  const onClearAttachment = () => setAttachment(null);
 
   return (
     <div>
@@ -63,6 +97,14 @@ const Home = (props) => {
           value={tweet}
           onChange={onChange}
         />
+
+        <input type='file' accept='image/*' onChange={onFileChange} />
+        {attachment && (
+          <div>
+            <img src={attachment} alt='img' width='50px' height='50px' />
+            <button onClick={onClearAttachment}>clear</button>
+          </div>
+        )}
         <button onClick={onSubmit}>Tweet</button>
       </form>
       <div>
