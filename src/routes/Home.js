@@ -34,12 +34,9 @@ const Home = (props) => {
         id: doc.id,
         ...doc.data(),
       }));
-      //   console.log(tweetArray);
       setTweets(tweetArray);
     });
   }, []);
-
-  //   console.log(tweets);
 
   const onChange = (e) => {
     setTweet(e.currentTarget.value);
