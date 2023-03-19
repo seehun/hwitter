@@ -43,18 +43,29 @@ const Profile = (props) => {
   };
 
   return (
-    <>
-      <form>
+    <div className='container'>
+      <form onSubmit={onSubmit} className='profileForm'>
         <input
           type='text'
           placeholder='display name'
           value={newDisplayName}
           onChange={onChange}
+          autoFocus
+          className='formInput'
         />
-        <button onClick={onSubmit}>update profile</button>
+        <input
+          type='submit'
+          value='Update Profile'
+          className='formBtn'
+          style={{
+            marginTop: 10,
+          }}
+        />
       </form>
-      <button onClick={onLogOut}>log out</button>
-    </>
+      <span className='formBtn cancelBtn logOut' onClick={onLogOut}>
+        Log Out
+      </span>
+    </div>
   );
 };
 
